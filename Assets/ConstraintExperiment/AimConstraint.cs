@@ -31,7 +31,7 @@ namespace ConstraintExperiment
         [SerializeField]
         Vector3 UpVector = Vector3.up;
 
-        public Vector3 RightVector;
+        Vector3 RightVector;
 
         Quaternion m_selfInitial;
         Matrix4x4 m_coords;
