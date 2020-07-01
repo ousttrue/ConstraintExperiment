@@ -51,7 +51,7 @@
   "lock": {
     "com.vrmc.univrm": {
       "revision": "HEAD",
-      "hash": "87eea72febeb1c45eb3c2f81d5b2922df76c8950"
+      "hash": "198c2c605ded711b21781421e71ba9bdbe0f8728"
     },
     "com.vrmc.vrmshaders": {
       "revision": "HEAD",
