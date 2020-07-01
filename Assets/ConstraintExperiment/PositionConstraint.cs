@@ -65,7 +65,7 @@ namespace ConstraintExperiment
                 case ConstraintCoordinates.Local:
                     {
                         var delta = Source.position - m_sourceInitial;
-                        var localDelta = transform.ParentRotation() * delta;
+                        var localDelta = Quaternion.Inverse(transform.ParentRotation()) * delta;
                         transform.localPosition = m_localInitial + FreezeAxes.Freeze(localDelta * Weight);
                         break;
                     }
