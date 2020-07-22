@@ -13,7 +13,10 @@ namespace ConstraintExperiment
         Transform Source;
 
         [SerializeField]
-        ConstraintCoordinates FreezeCoordinates;
+        ConstraintCoordinates SourceCoordinate;
+
+        [SerializeField]
+        ConstraintCoordinates DestinationCoordinate;
 
         [SerializeField]
         AxesMask FreezeAxes;
@@ -22,21 +25,18 @@ namespace ConstraintExperiment
         [Range(0, 10.0f)]
         float Weight = 1.0f;
 
-        Quaternion m_sourceInitial;
-        Quaternion m_worldInitial;
-        Quaternion m_localInitial;
+        ConstraintSource m_src;
 
-        void Start()
+        ConstraintDestination m_dst;
+
+        /// <summary>
+        /// Editorで設定値の変更を反映するために、クリアする
+        /// </summary>
+        void OnValidate()
         {
-            if (Source == null)
-            {
-                enabled = false;
-                return;
-            }
-
-            m_sourceInitial = Source.rotation;
-            m_worldInitial = transform.rotation;
-            m_localInitial = transform.localRotation;
+            Debug.Log("Validate");
+            m_src = null;
+            m_dst = null;
         }
 
         /// <summary>
@@ -51,25 +51,22 @@ namespace ConstraintExperiment
                 return;
             }
 
-            switch (FreezeCoordinates)
+            if (m_src == null)
             {
-                case ConstraintCoordinates.World:
-                    {
-                        var delta = Quaternion.Inverse(m_sourceInitial) * Source.rotation;
-                        var feezed = FreezeAxes.Freeze(delta.eulerAngles);
-                        transform.rotation = Quaternion.LerpUnclamped(m_worldInitial, m_worldInitial * Quaternion.Euler(feezed), Weight);
-                        break;
-                    }
-
-                case ConstraintCoordinates.Local:
-                    {
-                        var delta = Quaternion.Inverse(m_sourceInitial) * Source.rotation;
-                        var localDelta = Quaternion.Inverse(transform.ParentRotation()) * delta;
-                        var freezed = FreezeAxes.Freeze(localDelta.eulerAngles);
-                        transform.localRotation = Quaternion.LerpUnclamped(m_localInitial, m_localInitial * Quaternion.Euler(freezed), Weight);
-                        break;
-                    }
+                m_src = new ConstraintSource(Source, SourceCoordinate);
             }
+            if (m_dst == null)
+            {
+                m_dst = new ConstraintDestination(transform, DestinationCoordinate);
+            }
+
+            // 軸制限をしたオイラー角
+            var delta = m_src.RotationDelta;
+            var fleezed = FreezeAxes.Freeze(delta.eulerAngles);
+            var rotation = Quaternion.Euler(fleezed);
+            Debug.Log($"{delta} => {rotation}");
+            // オイラー角を再度Quaternionへ。weight を加味してSlerpする
+            m_dst.ApplyRotation(rotation, Weight);
         }
     }
 }

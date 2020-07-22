@@ -29,7 +29,7 @@ namespace ConstraintExperiment
         ConstraintDestination m_dst;
 
         /// <summary>
-        /// Editorで設定値の変更を反映する
+        /// Editorで設定値の変更を反映するために、クリアする
         /// </summary>
         void OnValidate()
         {
@@ -38,14 +38,11 @@ namespace ConstraintExperiment
             m_dst = null;
         }
 
-        /// <summary>
-        /// SourceのUpdateよりも先か後かはその時による。
-        /// 厳密に制御するのは無理。
-        /// </summary>
         void Update()
         {
             if (Source == null)
             {
+                enabled = false;
                 return;
             }
 
@@ -58,7 +55,7 @@ namespace ConstraintExperiment
                 m_dst = new ConstraintDestination(transform, DestinationCoordinate);
             }
 
-            var delta = m_src.TranslationDelta;
+            var delta = FreezeAxes.Freeze(m_src.TranslationDelta);
             m_dst.ApplyTranslation(delta, Weight);
         }
     }

@@ -362,9 +362,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Source: {fileID: 1843152718}
-  FreezeCoordinates: 0
+  SourceCoordinate: 0
+  DestinationCoordinate: 0
   FreezeAxes: 0
-  Weight: 2.5
+  Weight: 1
 --- !u!65 &1422327468
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -489,7 +490,6 @@ MonoBehaviour:
   Weight: 1
   AimVector: {x: 0, y: 0, z: 1}
   UpVector: {x: 0, y: 1, z: 0}
-  RightVector: {x: 0, y: 0, z: 0}
 --- !u!65 &1601576189
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -583,7 +583,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Source: {fileID: 1843152718}
-  FreezeCoordinates: 1
+  SourceCoordinate: 0
+  DestinationCoordinate: 0
   FreezeAxes: 0
   Weight: 1
 --- !u!65 &1630346676
