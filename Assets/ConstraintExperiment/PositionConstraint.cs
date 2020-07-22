@@ -12,10 +12,10 @@ namespace ConstraintExperiment
         Transform Source;
 
         [SerializeField]
-        ConstraintCoordinates SourceCoordinate;
+        SourceCoordinates SourceCoordinate;
 
         [SerializeField]
-        ConstraintCoordinates DestinationCoordinate;
+        DestinationCoordinates DestinationCoordinate;
 
         [SerializeField]
         AxesMask FreezeAxes;
@@ -23,6 +23,9 @@ namespace ConstraintExperiment
         [SerializeField]
         [Range(0, 10.0f)]
         float Weight = 1.0f;
+
+        [SerializeField]
+        Transform ModelRoot;
 
         ConstraintSource m_src;
 
@@ -48,7 +51,7 @@ namespace ConstraintExperiment
 
             if (m_src == null)
             {
-                m_src = new ConstraintSource(Source, SourceCoordinate);
+                m_src = new ConstraintSource(Source, SourceCoordinate, ModelRoot);
             }
             if (m_dst == null)
             {

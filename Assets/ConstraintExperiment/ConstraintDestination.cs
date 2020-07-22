@@ -3,25 +3,31 @@ using UnityEngine;
 
 namespace ConstraintExperiment
 {
+    public enum DestinationCoordinates
+    {
+        World,
+        Local,
+    }
+
     class ConstraintDestination
     {
         readonly Transform m_transform;
-        readonly ConstraintCoordinates m_coords;
+        readonly DestinationCoordinates m_coords;
 
         readonly TRS m_initial;
 
-        public ConstraintDestination(Transform t, ConstraintCoordinates coords)
+        public ConstraintDestination(Transform t, DestinationCoordinates coords)
         {
             m_transform = t;
             m_coords = coords;
 
             switch (m_coords)
             {
-                case ConstraintCoordinates.World:
+                case DestinationCoordinates.World:
                     m_initial = TRS.GetWorld(t);
                     break;
 
-                case ConstraintCoordinates.Local:
+                case DestinationCoordinates.Local:
                     m_initial = TRS.GetLocal(t);
                     break;
 
@@ -35,11 +41,11 @@ namespace ConstraintExperiment
             var value = m_initial.Translation + delta * weight;
             switch (m_coords)
             {
-                case ConstraintCoordinates.World:
+                case DestinationCoordinates.World:
                     m_transform.position = value;
                     break;
 
-                case ConstraintCoordinates.Local:
+                case DestinationCoordinates.Local:
                     m_transform.localPosition = value;
                     break;
 
@@ -54,11 +60,11 @@ namespace ConstraintExperiment
             var value = Quaternion.LerpUnclamped(Quaternion.identity, delta, weight) * m_initial.Rotation;
             switch (m_coords)
             {
-                case ConstraintCoordinates.World:
+                case DestinationCoordinates.World:
                     m_transform.rotation = value;
                     break;
 
-                case ConstraintCoordinates.Local:
+                case DestinationCoordinates.Local:
                     m_transform.localRotation = value;
                     break;
 
