@@ -1,6 +1,4 @@
-﻿using System;
-using UnityEngine;
-
+﻿using UnityEngine;
 
 namespace ConstraintExperiment
 {
@@ -13,11 +11,11 @@ namespace ConstraintExperiment
         [SerializeField]
         Transform Source;
 
-        /// <summary>
-        /// 動作中に変更した場合は動作不定
-        /// </summary>
         [SerializeField]
-        ConstraintCoordinates FreezeCoordinates;
+        ConstraintCoordinates SourceCoordinate;
+
+        [SerializeField]
+        ConstraintCoordinates DestinationCoordinate;
 
         [SerializeField]
         AxesMask FreezeAxes;
@@ -26,20 +24,18 @@ namespace ConstraintExperiment
         [Range(0, 10.0f)]
         float Weight = 1.0f;
 
-        Vector3 m_sourceInitial;
-        Vector3 m_worldInitial;
-        Vector3 m_localInitial;
-        // Matrix4x4 m_worldToLocal;
+        ConstraintSource m_src;
 
-        void Start()
+        ConstraintDestination m_dst;
+
+        /// <summary>
+        /// Editorで設定値の変更を反映する
+        /// </summary>
+        void OnValidate()
         {
-            if (Source == null)
-            {
-                return;
-            }
-            m_sourceInitial = Source.position;
-            m_worldInitial = transform.position;
-            m_localInitial = transform.localPosition;
+            Debug.Log("Validate");
+            m_src = null;
+            m_dst = null;
         }
 
         /// <summary>
@@ -53,26 +49,17 @@ namespace ConstraintExperiment
                 return;
             }
 
-            switch (FreezeCoordinates)
+            if (m_src == null)
             {
-                case ConstraintCoordinates.World:
-                    {
-                        var delta = Source.position - m_sourceInitial;
-                        transform.position = m_worldInitial + FreezeAxes.Freeze(delta * Weight);
-                        break;
-                    }
-
-                case ConstraintCoordinates.Local:
-                    {
-                        var delta = Source.position - m_sourceInitial;
-                        var localDelta = Quaternion.Inverse(transform.ParentRotation()) * delta;
-                        transform.localPosition = m_localInitial + FreezeAxes.Freeze(localDelta * Weight);
-                        break;
-                    }
-
-                default:
-                    throw new NotImplementedException();
+                m_src = new ConstraintSource(Source, SourceCoordinate);
             }
+            if (m_dst == null)
+            {
+                m_dst = new ConstraintDestination(transform, DestinationCoordinate);
+            }
+
+            var delta = m_src.TranslationDelta;
+            m_dst.ApplyTranslation(delta, Weight);
         }
     }
 }
